@@ -29,4 +29,15 @@ public class CalificacionesController : ControllerBase
             })
             .ToArray();
     }
+
+    [HttpGet(Name = "GetCalificacionBcra")]
+    public IEnumerable<string> GetCalificacionesBcra()
+    {
+        var calificaciones = Enum.GetValues(typeof(CalificacionCrediticia))
+                            .Cast<CalificacionCrediticia>()
+                            .Select(cc => cc.ToString())
+                            .ToList();
+
+        return calificaciones;
+    }
 }
