@@ -81,6 +81,15 @@ CREATE TABLE [dbo].CalificacionesBCRACodigo(
 	[Calificacion] [varchar](10) not null,
 	[Calificaciones_BCRA_Id] [int] not NULL,
 	[ValorNumerico][int] not null,
+	[DateCreated] [datetime2](7) NOT NULL,
+	[DateAproved] [datetime2](7) NULL,
+	[DateRemoved] [datetime2](7) NULL,
+	[UserCreated] [nvarchar](50) NOT NULL,
+	[UserAproved] [nvarchar](50) NULL,
+	[UserRemoved] [nvarchar](50) NULL,
+	[Comments] [nvarchar](255) NULL,
+	[Version] [int] NOT NULL,
+	[Status] [int] NOT NULL,
  CONSTRAINT [PK_CalificacionesBCRACodigo] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -94,13 +103,11 @@ GO
 
 CREATE TABLE [dbo].[CalificadorasRiesgos](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[Clave] [int] NOT NULL,
-	[CalificadoraRiesgos] [nvarchar](255) NOT NULL,
+	[Nombre] [nvarchar](255) NOT NULL,
 	[DateCreated] [datetime2](7) NOT NULL,
 	[DateAproved] [datetime2](7) NULL,
 	[UserCreated] [nvarchar](50) NOT NULL,
 	[UserAproved] [nvarchar](50) NULL,
-	[Comments] [nvarchar](255) NULL,
 	[Status] [int] NOT NULL,
  CONSTRAINT [PK_CalificadorasRiesgos] PRIMARY KEY CLUSTERED 
 (
@@ -124,7 +131,16 @@ CREATE TABLE [dbo].CalificadorasRiesgosPeriodo(
 	[FechaAlta] [datetime2](7) not null,
 	[FechaBaja] [datetime2](7) not null,
 	[FechaNotificacionAlta] [datetime2](7) not null,
-	[FechaNotificacionBaja] [datetime2](7) not null
+	[FechaNotificacionBaja] [datetime2](7) not null,
+	[DateCreated] [datetime2](7) NOT NULL,
+	[DateAproved] [datetime2](7) NULL,
+	[DateRemoved] [datetime2](7) NULL,
+	[UserCreated] [nvarchar](50) NOT NULL,
+	[UserAproved] [nvarchar](50) NULL,
+	[UserRemoved] [nvarchar](50) NULL,
+	[Comments] [nvarchar](255) NULL,
+	[Version] [int] NOT NULL,
+	[Status] [int] NOT NULL,
 CONSTRAINT [PK_CalificadorasRiesgosPeriodo] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

@@ -1,6 +1,7 @@
 using ari_ib_calificaciones_api_web.Models;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace ari_ib_calificaciones_api_web.Controllers;
 
 [ApiController]
@@ -54,3 +55,4 @@ public class CalificadorasController : ControllerBase
             };
     }
 }
+

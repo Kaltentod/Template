@@ -1,5 +1,4 @@
 ﻿using ari_ib_calificaciones_api_domain.Enums;
-using ari_ib_calificaciones_api_domain.Shared.Enums;
 
 namespace ari_ib_calificaciones_api_domain.Entities.ClientesTitulosCalificados
 {

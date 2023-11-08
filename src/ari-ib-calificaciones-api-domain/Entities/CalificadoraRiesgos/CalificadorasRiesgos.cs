@@ -1,69 +1,79 @@
 ﻿using ari_ib_calificaciones_api_domain.Entities.CalificadoraRiesgosPeriodo;
-using BNA.IB.WEBAPP.Domain.Shared.Enums;
+using ari_ib_calificaciones_api_domain.Enums;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ari_ib_calificaciones_api_domain.Entities.CalificadoraRiesgos
 {
-    public class CalificadorasRiesgos : AuditableAggregateRoot<int>, ICalificadorasRiesgos
+    public class CalificadorasRiesgos : ICalificadorasRiesgos
     {
-        public string? CalificadoraRiesgos { get; set; }
-        public int Clave { get; set; }
+        public int Id {get;set;}
+        public string Nombre { get; set; }
+        public DateTime DateCreated { get; set; }
+        public string UserCreated { get; set; }
+        public DateTime DateAproved { get; set; }
+        public string UserAproved { get; set; }
+        public TipoEstado Status { get; set; }
         public List<CalificadoraRiesgosPeriodos> CalificadorasRiesgosPeriodos { get; set; }
 
-        public static CalificadorasRiesgos Crear(string usuario, string nombre, List<CalificadoraRiesgosPeriodos> calificadorasRiesgosPeriodo, int clave = 0)
+        public static CalificadorasRiesgos Crear(string usuario, string nombre, List<CalificadoraRiesgosPeriodos> calificadorasRiesgosPeriodo)
         {
             if (string.IsNullOrWhiteSpace(nombre)) throw new ArgumentException(null, nameof(nombre));
             var calificadora = new CalificadorasRiesgos
             {
                 UserCreated = usuario,
-                CalificadoraRiesgos = nombre,
+                Nombre = nombre,
                 CalificadorasRiesgosPeriodos = calificadorasRiesgosPeriodo,
             };
 
-            if (clave > 0)
-            {
-                calificadora.Clave = clave;
-            }
             return calificadora;
         }
 
-        public void Editar(string nombre, int clave, List<CalificadoraRiesgosPeriodos> calificadorasRiesgosPeriodo)
+        public void Aprobar(string usuario)
         {
-            if (Status != TipoEstado.SinVerificar && Status != TipoEstado.Rechazado) throw new ApplicationException("Solo es posible editar SinVerificares.");
+            if (Status != TipoEstado.SinVerificar) throw new ApplicationException("Solo es posible aprobar Sin Verificar.");
 
-            CalificadoraRiesgos = nombre;
-            Clave = clave;
-            CalificadorasRiesgosPeriodos = calificadorasRiesgosPeriodo;
-        }
-
-        public static CalificadorasRiesgos Clonar(string usuario, CalificadorasRiesgos original)
-        {
-            return new CalificadorasRiesgos
-            {
-                UserCreated = usuario,
-                CalificadoraRiesgos = original.CalificadoraRiesgos,
-                Clave = original.Clave,
-                CalificadorasRiesgosPeriodos = original.CalificadorasRiesgosPeriodos,
-                Version = original.Version + 1
-            };
-        }
-
-        public void Reemplazar(string user, string? comments = null)
-        {
-            if (Status != TipoEstado.Vigente) throw new ApplicationException("Solo es posible reemplazar vigentes.");
-
-            UserRemoved = user;
-            DateRemoved = DateTime.Now;
-            Status = TipoEstado.Obsoleto;
-            Comments += $"{DateRemoved?.ToString("yyyy/MM/dd HH:mm")}|{UserRemoved}|Reemplazado||\n";
-        }
-
-        public void Rechazar(string usuario)
-        {
-            if (Status != TipoEstado.SinVerificar) throw new ApplicationException("Solo es posible rechazar Sin Verificar.");
-
-            Status = TipoEstado.Rechazado;
+            Status = TipoEstado.Vigente;
             UserAproved = usuario;
             DateAproved = DateTime.Now;
         }
+
+        public Validacion VerificarPeriodos(List<CalificadoraRiesgosPeriodos>? nuevoPeriodos = null)
+        {
+            if (nuevoPeriodos == null)
+            {
+                nuevoPeriodos = new List<CalificadoraRiesgosPeriodos>();
+            }
+
+            var periodoComprar = nuevoPeriodos;
+
+            periodoComprar.AddRange(CalificadorasRiesgosPeriodos);
+
+            periodoComprar = periodoComprar.Where(x => x.Status != TipoEstado.Obsoleto).ToList();
+
+            periodoComprar.Sort((p1, p2) => p1.FechaAlta.CompareTo(p2.FechaAlta));
+            string errorMensaje = "";
+            int idError = 0;
+
+            for (int i = 0; i < periodoComprar.Count - 1 && errorMensaje == ""; i++)
+            {
+                var periodoActual = periodoComprar[i];
+                var periodoSiguiente = periodoComprar[i + 1];
+
+                if (periodoActual.FechaBaja >= periodoSiguiente.FechaAlta)
+                {
+                    errorMensaje = $"El periodo de {periodoActual.FechaAlta} hasta {periodoActual.FechaBaja} se superpone con el periodo de {periodoSiguiente.FechaAlta} hasta {periodoSiguiente.FechaBaja}";
+                    idError = periodoActual.Id;
+                }
+            }
+
+
+            return new Validacion()
+            {
+                EsValido = errorMensaje == ""? true : false,
+                ErrorMensaje = errorMensaje,
+                IdError = idError
+            };
+        }
     }
+    
 }

@@ -1,19 +1,18 @@
-﻿using ari_ib_calificaciones_api_domain.Entities.Adjuntos;
-using ari_ib_calificaciones_api_domain.Shared.Enums;
+﻿using ari_ib_calificaciones_api_domain.Entities.CalificadoraRiesgosPeriodo;
+using ari_ib_calificaciones_api_domain.Enums;
 
 namespace ari_ib_calificaciones_api_domain.Entities.CalificadoraRiesgos;
 
 public interface ICalificadorasRiesgosRepository
 {
-    void AddCalificadorasRiesgos(CalificadorasRiesgos calificadorasRiesgos, List<AdjuntoVinculado> adjuntos);
-    void UpdateCalificadorasRiesgos(CalificadorasRiesgos calificadorasRiesgos, bool editarRangos = true, List<AdjuntoVinculado>? adjuntoVinculados = null);
+    void AddCalificadorasRiesgos(CalificadorasRiesgos calificadorasRiesgos);
+    void AddCalificadorasRiesgosPeriodo(CalificadoraRiesgosPeriodos calificadoraRiesgosPeriodo);
+    void UpdateCalificadorasRiesgosPeriodo(CalificadoraRiesgosPeriodos calificadoraRiesgosPeriodo);
     void RemoveCalificadorasRiesgos(CalificadorasRiesgos calificadorasRiesgos);
+    void RemoveCalificadorasRiesgosPeriodo(CalificadoraRiesgosPeriodos calificadorasRiesgos);
     IQueryable<CalificadorasRiesgos> GetClasificadoraRiesgos();
     CalificadorasRiesgos GetCalificadorasRiesgosById(int id);
-    IQueryable<CalificadorasRiesgos> ListCalificadorasRiesgos(TipoEstado? tipoEstado = null);
-    IQueryable<CalificadorasRiesgos> GetCalificadorasRiesgosByClave(int clave);
-    CalificadorasRiesgos GetCalificadorasRiesgosVigente(int clave, DateTime fechaDesde, int version);
-    IQueryable<CalificadorasRiesgos> GetClasificadoraRiesgosByEstados(int? clave = null, bool vigente = true,
+    CalificadoraRiesgosPeriodos GetCalificadorasRiesgosPeriodoById(int id);
+    IQueryable<CalificadorasRiesgos> GetClasificadoraRiesgosByEstados(bool vigente = true,
             bool borrador = true, bool rechazado = true, bool obsoleto = true);
-    List<CalificadorasRiesgos> GetCalificadorasRiesgosClaves();
 }

@@ -9,7 +9,6 @@ namespace ari_ib_calificaciones_api_domain.Entities.CalificadorasRiesgosCalifica
     public class CalificadorasRiesgosCalificacion : ICalificadorasRiesgosCalificacion
     {
         public int Id { get; set; }
-        public int Clave { get; set; }
         public int PeriodoId { get; set; }
         public string CalificacionCalificadora { get; set; } = null!;
         public int CalificacionesBcraCodigoId { get; set; }

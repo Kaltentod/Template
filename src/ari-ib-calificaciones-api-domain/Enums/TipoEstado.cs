@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace BNA.IB.WEBAPP.Domain.Shared.Enums;
+namespace ari_ib_calificaciones_api_domain.Enums;
 
 public enum TipoEstado
 {
