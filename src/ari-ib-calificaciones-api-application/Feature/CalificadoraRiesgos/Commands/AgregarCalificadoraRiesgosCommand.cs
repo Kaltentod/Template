@@ -2,8 +2,6 @@
 using ari_ib_calificaciones_api_domain.Entities.Adjuntos;
 using ari_ib_calificaciones_api_domain.Entities.CalificadoraRiesgos;
 using ari_ib_calificaciones_api_domain.Entities.CalificadoraRiesgosPeriodo;
-using ari_ib_calificaciones_api_domain.Entities.CalificadorasRiesgosCalificacion;
-using BNA.IB.WEBAPP.Infrastructure.SQLServer.Repositories;
 
 namespace ari_ib_calificaciones_api_application.Feature.CalificadoraRiesgos.Commands;
 
