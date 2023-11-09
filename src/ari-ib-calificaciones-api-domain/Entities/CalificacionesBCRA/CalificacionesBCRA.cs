@@ -1,4 +1,4 @@
-﻿using BNA.IB.WEBAPP.Domain.Shared.Enums;
+﻿using ari_ib_calificaciones_api_domain.Enums;
 
 namespace ari_ib_calificaciones_api_domain.Entities.CalificacionesBCRA
 {
