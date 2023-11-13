@@ -1,58 +1,88 @@
 using BNA.IB.Calificaciones.API.Web.Models;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 
 namespace BNA.IB.Calificaciones.API.Web.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[SwaggerTag("Calificadoras")]
 public class CalificadorasController : ControllerBase
 {
     private readonly ILogger<CalificadorasController> _logger;
+    private readonly IMediator _mediator;
 
-    public CalificadorasController(ILogger<CalificadorasController> logger)
+    public CalificadorasController(ILogger<CalificadorasController> logger, IMediator mediator)
     {
         _logger = logger;
+        _mediator = mediator;
     }
 
     [HttpGet(Name = "GetCalificadoras")]
-    public IEnumerable<Calificadora> Get()
+    [SwaggerOperation(
+        Summary = "",
+        Description = "",
+        OperationId = ""
+    )]
+    [SwaggerResponse(200, "")]
+    public async Task<IEnumerable<GetCalificadorasQueryResponse>> GetCalificadoras()
     {
-        string[] nombres =
-        {
-            "EVALUADORA LATINOAMERICANA S.A.", 
-            "FIX SCR S.A. AGENTE DE CALIFICACIÓN DE RIESGO", 
-            "MOODY'S LOCAL AR ACR S.A.", 
-            "S&P GLOBAL RATINGS ARGENTINA SRL", 
-            "PROFESSIONAL RATING SERVICES AG. CAL. RIESGO S.A."
-        };
-        
-        return Enumerable.Range(1, 5).Select(index => new Calificadora
-            {
-                Id = Random.Shared.Next(100, 1000),
-                Clave = Random.Shared.Next(1, 100),
-                Nombre = nombres[Random.Shared.Next(nombres.Length)],
-                FechaAlta = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                FechaAltaBCRA = DateOnly.FromDateTime(DateTime.Now.AddDays(index+1)),
-                FechaBaja = DateOnly.FromDateTime(DateTime.Now.AddDays(index+2)),
-                FechaBajaBCRA = DateOnly.FromDateTime(DateTime.Now.AddDays(index+3)),
-            })
-            .ToArray();
+        _mediator.Send(new GetCalificacionesQuery());
+    }
+
+    [HttpGet("{id:int}", Name = "GetCalificadora")]
+    [SwaggerOperation(
+        Summary = "",
+        Description = "",
+        OperationId = ""
+    )]
+    [SwaggerResponse(200, "")]
+    public async Task<GetCalificadoraQueryResponse> GetCalificadora([FromRoute] GetCalificadoraQuery query)
+    {
+        return _mediator.Send(query);
     }
     
-    [HttpGet("{id:int}", Name = "GetCalificadora")]
-    public async Task<ActionResult<Calificadora>> Get(int id)
+    [HttpPost(Name = "CreateCalificadora")]
+    [SwaggerOperation(
+        Summary = "",
+        Description = "",
+        OperationId = ""
+    )]
+    [SwaggerResponse(200, "")]
+    public async Task<IActionResult> CreateCalificadora([FromBody] CreateCalificadoraCommand command)
     {
-        return new Calificadora
-            {
-                Id = id,
-                Clave = Random.Shared.Next(1, 100),
-                Nombre = "S&P GLOBAL RATINGS ARGENTINA SRL",
-                FechaAlta = DateOnly.FromDateTime(DateTime.Now),
-                FechaAltaBCRA = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
-                FechaBaja = DateOnly.FromDateTime(DateTime.Now.AddDays(2)),
-                FechaBajaBCRA = DateOnly.FromDateTime(DateTime.Now.AddDays(3)),
-            };
+        await _mediator.Send(command);
+
+        return Ok();
+    }
+    
+    [HttpPut("{id:int}", Name = "UpdateCalificadora")]
+    [SwaggerOperation(
+        Summary = "",
+        Description = "",
+        OperationId = ""
+    )]
+    [SwaggerResponse(200, "")]
+    public async Task<IActionResult> UpdateCalificadora([FromBody] UpdateCalificadoraCommand command)
+    {
+        await _mediator.Send(command);
+
+        return Ok();
+    }
+    
+    [HttpDelete("{id:int}", Name = "DeleteCalificadora")]
+    [SwaggerOperation(
+        Summary = "",
+        Description = "",
+        OperationId = ""
+    )]
+    [SwaggerResponse(200, "")]
+    public async Task<IActionResult> DeleteCalificadora([FromBody] DeleteCalificadoraCommand command)
+    {
+        await _mediator.Send(command);
+
+        return Ok();
     }
 }
-
