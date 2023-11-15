@@ -37,7 +37,7 @@ public class
         _context.Calificadoras.Add(entity);
 
         await _context.SaveChangesAsync(cancellationToken);
-            
+
         return new CreateCalificadoraCommandResponse { Id = entity.Id };
     }
 }
