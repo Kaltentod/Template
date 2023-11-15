@@ -1,5 +1,6 @@
 using System.Reflection;
 using BNA.IB.Calificaciones.API.Application.Common;
+using BNA.IB.Calificaciones.API.Domain;
 using BNA.IB.Calificaciones.API.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +18,27 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     }
 
     public DbSet<Calificadora> Calificadoras { get; set; }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        foreach (var entry in ChangeTracker.Entries<BaseEntity>())
+        {
+            switch (entry.State)
+            {
+                case EntityState.Added:
+                    entry.Entity.CreatedBy = "userId";
+                    entry.Entity.CreatedAt = DateTime.Now;
+                    break;
+
+                case EntityState.Modified:
+                    entry.Entity.UpdatedBy = "userId";
+                    entry.Entity.UpdatedAt = DateTime.Now;
+                    break;
+            }
+        }
+
+        return await base.SaveChangesAsync(cancellationToken);
+    }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -61,7 +61,8 @@ public class CalificadorasController : ControllerBase
     [SwaggerResponse(400, "Solicitud inválida", typeof(void))]
     public async Task<IActionResult> CreateCalificadora([FromBody] CreateCalificadoraCommand command)
     {
-        return CreatedAtRoute("GetCalificadora", await _mediator.Send(command));
+        var response = await _mediator.Send(command);
+        return CreatedAtRoute(new { response.Id }, response);
     }
 
     // UpdateCalificadora

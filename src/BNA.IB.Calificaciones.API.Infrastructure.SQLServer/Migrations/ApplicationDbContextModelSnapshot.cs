@@ -33,23 +33,22 @@ namespace BNA.IB.Calificaciones.API.Infrastructure.SQLServer.Migrations
                     b.Property<int>("Clave")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("FechaAlta")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("FechaAltaBCRA")
+                    b.Property<DateTime?>("FechaAltaBCRA")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("FechaBaja")
+                    b.Property<DateTime?>("FechaBaja")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("FechaBajaBCRA")
+                    b.Property<DateTime?>("FechaBajaBCRA")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Nombre")

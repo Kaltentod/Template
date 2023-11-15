@@ -31,12 +31,14 @@ public class
         {
             Clave = request.Clave,
             Nombre = request.Nombre,
-            FechaAlta = DateTime.Now
+            FechaAlta = DateTime.Today
         };
 
         _context.Calificadoras.Add(entity);
 
-        return new CreateCalificadoraCommandResponse { Id = await _context.SaveChangesAsync(cancellationToken) };
+        await _context.SaveChangesAsync(cancellationToken);
+            
+        return new CreateCalificadoraCommandResponse { Id = entity.Id };
     }
 }
 

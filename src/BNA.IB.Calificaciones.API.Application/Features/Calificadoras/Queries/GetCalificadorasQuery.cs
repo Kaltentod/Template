@@ -50,7 +50,7 @@ public class GetCalificadorasQueryResponse
     public int Clave { get; set; }
     public string Nombre { get; set; }
     public DateTime FechaAlta { get; set; }
-    public DateTime FechaAltaBCRA { get; set; }
-    public DateTime FechaBaja { get; set; }
-    public DateTime FechaBajaBCRA { get; set; }
+    public DateTime? FechaAltaBCRA { get; set; }
+    public DateTime? FechaBaja { get; set; }
+    public DateTime? FechaBajaBCRA { get; set; }
 }
