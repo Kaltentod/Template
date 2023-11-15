@@ -20,6 +20,10 @@ public class CreateCalificadoraValidator : AbstractValidator<CreateCalificadoraC
         RuleFor(x => x.Clave).NotNull();
         RuleFor(x => x.Nombre).Length(3, 50);
     }
+    public DateTime FechaAlta { get; set; }
+    public DateTime FechaBaja { get; set; }
+    public DateTime FechaAltaBCRA { get; set; }
+    public DateTime FechaBajaBCRA { get; set; }
 }
 
 public class
@@ -41,6 +45,10 @@ public class
             Nombre = request.Nombre,
             FechaAlta = request.FechaAlta.ToDateTime(TimeOnly.MinValue),
             FechaAltaBCRA = request.FechaAltaBCRA.ToDateTime(TimeOnly.MinValue)
+            FechaAlta = request.FechaAlta,
+            FechaAltaBCRA = request.FechaAltaBCRA,
+            FechaBaja = request.FechaBaja,
+            FechaBajaBCRA = request.FechaBajaBCRA
         };
 
         _context.Calificadoras.Add(entity);
