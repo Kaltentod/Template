@@ -1,6 +1,12 @@
 using System.Reflection;
+using BNA.IB.Calificaciones.API.Application.Behaviours;
 using BNA.IB.Calificaciones.API.Application.Features.Calificadoras.Queries;
+using BNA.IB.Calificaciones.API.Web.Filters;
 using BNA.IB.Calificaciones.API.Web.Modules;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +24,13 @@ builder.Services.AddPersistence(builder.Configuration, builder.Environment);
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(Assembly.GetAssembly(typeof(GetCalificadorasQueryHandler))!));
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+        options.Filters.Add<ApiExceptionFilterAttribute>())
+    .AddFluentValidation();
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+    options.SuppressModelStateInvalidFilter = true);
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
 builder.Services.AddEndpointsApiExplorer();
 

@@ -1,4 +1,6 @@
 using BNA.IB.Calificaciones.API.Application.Common;
+using BNA.IB.Calificaciones.API.Application.Exceptions;
+using BNA.IB.Calificaciones.API.Domain.Entities;
 using MediatR;
 
 namespace BNA.IB.Calificaciones.API.Application.Features.Calificadoras.Queries;
@@ -22,6 +24,11 @@ public class GetCalificadoraQueryHandler : IRequestHandler<GetCalificadoraQuery,
     {
         var entity = await _context.Calificadoras.FindAsync(request.Id);
 
+        if (entity is null)
+        {
+            throw new NotFoundException(nameof(Calificadora), request.Id);
+        }
+        
         return new GetCalificadoraQueryResponse
         {
             Id = entity.Id,

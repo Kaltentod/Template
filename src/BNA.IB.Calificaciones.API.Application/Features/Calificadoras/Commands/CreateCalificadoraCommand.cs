@@ -1,5 +1,6 @@
 using BNA.IB.Calificaciones.API.Application.Common;
 using BNA.IB.Calificaciones.API.Domain.Entities;
+using FluentValidation;
 using MediatR;
 
 namespace BNA.IB.Calificaciones.API.Application.Features.Calificadoras.Commands;
@@ -10,8 +11,15 @@ public class CreateCalificadoraCommand : IRequest<CreateCalificadoraCommandRespo
     public string Nombre { get; set; }
     public DateOnly FechaAlta { get; set; }
     public DateOnly FechaAltaBCRA { get; set; }
-    public DateOnly FechaBaja { get; set; }
-    public DateOnly FechaBajaBCRA { get; set; }
+}
+
+public class CreateCalificadoraValidator : AbstractValidator<CreateCalificadoraCommand> 
+{
+    public CreateCalificadoraValidator() 
+    {
+        RuleFor(x => x.Clave).NotNull();
+        RuleFor(x => x.Nombre).Length(3, 50);
+    }
 }
 
 public class
@@ -31,7 +39,8 @@ public class
         {
             Clave = request.Clave,
             Nombre = request.Nombre,
-            FechaAlta = DateTime.Today
+            FechaAlta = request.FechaAlta.ToDateTime(TimeOnly.MinValue),
+            FechaAltaBCRA = request.FechaAltaBCRA.ToDateTime(TimeOnly.MinValue)
         };
 
         _context.Calificadoras.Add(entity);
