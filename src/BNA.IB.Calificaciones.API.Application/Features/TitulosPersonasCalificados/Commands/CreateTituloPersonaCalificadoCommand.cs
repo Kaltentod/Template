@@ -56,43 +56,6 @@ public class
 
         return new CreateTituloPersonaCalificadoCommandResponse { Id = entity.Id };
     }
-    /*
-    static TDestino CopiarPropiedades<TOrigen, TDestino>(TOrigen origen, TDestino destino)
-    {
-        var propiedadesOrigen = typeof(TOrigen).GetProperties();
-        var propiedadesDestino = typeof(TDestino).GetProperties();
-
-        foreach (var propiedadOrigen in propiedadesOrigen)
-        {
-            var propiedadDestino = propiedadesDestino.FirstOrDefault(p => p.Name == propiedadOrigen.Name);
-
-            if (propiedadDestino != null && propiedadDestino.PropertyType == propiedadOrigen.PropertyType)
-            {
-                var valor = propiedadOrigen.GetValue(origen);
-                propiedadDestino.SetValue(destino, valor);
-            }
-        }
-        return destino;
-    }
-
-    static TDestino CopiarPropiedades<TOrigen, TDestino>(TOrigen origen) where TDestino : new()
-    {
-        var destino = new TDestino();
-        var propiedadesOrigen = typeof(TOrigen).GetProperties();
-        var propiedadesDestino = typeof(TDestino).GetProperties();
-
-        foreach (var propiedadOrigen in propiedadesOrigen)
-        {
-            var propiedadDestino = propiedadesDestino.FirstOrDefault(p => p.Name == propiedadOrigen.Name);
-
-            if (propiedadDestino != null && propiedadDestino.PropertyType == propiedadOrigen.PropertyType)
-            {
-                var valor = propiedadOrigen.GetValue(origen);
-                propiedadDestino.SetValue(destino, valor);
-            }
-        }
-        return destino;
-    }*/
 }
 
 public class CreateTituloPersonaCalificadoCommandResponse

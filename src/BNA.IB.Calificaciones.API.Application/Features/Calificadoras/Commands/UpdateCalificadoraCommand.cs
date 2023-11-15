@@ -13,8 +13,8 @@ public class UpdateCalificadoraCommand : IRequest
     public string Nombre { get; set; }
     public DateOnly FechaAlta { get; set; }
     public DateOnly FechaAltaBCRA { get; set; }
-    public DateOnly? FechaBaja { get; set; }
-    public DateOnly? FechaBajaBCRA { get; set; }
+    public DateOnly? FechaBaja { get; set; } = DateOnly.Parse("01-01-2900");
+    public DateOnly? FechaBajaBCRA { get; set; } = DateOnly.Parse("01-01-2900");
 }
 
 public class UpdateCalificadoraValidator : AbstractValidator<UpdateCalificadoraCommand> 
@@ -23,6 +23,8 @@ public class UpdateCalificadoraValidator : AbstractValidator<UpdateCalificadoraC
     {
         RuleFor(x => x.Clave).NotNull();
         RuleFor(x => x.Nombre).Length(3, 50);
+        RuleFor(x => x.FechaAlta).NotNull();
+        RuleFor(x => x.FechaAltaBCRA).NotNull();
         RuleFor(x => x.FechaBaja).GreaterThanOrEqualTo(x => x.FechaAlta)
             .When(x => x.FechaBaja.HasValue);
         RuleFor(x => x.FechaBajaBCRA).GreaterThanOrEqualTo(x => x.FechaAltaBCRA)
