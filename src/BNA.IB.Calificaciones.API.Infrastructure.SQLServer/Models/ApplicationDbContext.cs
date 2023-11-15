@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BNA.IB.Calificaciones.API.Infrastructure.SQLServer.Models;
 
-public class ApplicationDbContext : DbContext, IApplicationDbContext
+public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
 {
     public ApplicationDbContext()
     {
@@ -16,12 +16,12 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
     }
 
+    public DbSet<Calificadora> Calificadoras { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         base.OnModelCreating(builder);
     }
-
-    public DbSet<Calificadora> Calificadoras { get; }
 }

@@ -1,14 +1,14 @@
-using BNA.IB.Calificaciones.API.Web.Models;
+using BNA.IB.Calificaciones.API.Application.Features.Calificadoras.Commands;
+using BNA.IB.Calificaciones.API.Application.Features.Calificadoras.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-
 namespace BNA.IB.Calificaciones.API.Web.Controllers;
 
 [ApiController]
-[Route("[controller]")]
-[SwaggerTag("Calificadoras")]
+[Route("api/[controller]")]
+[SwaggerTag("Calificadoras de riesgo")]
 public class CalificadorasController : ControllerBase
 {
     private readonly ILogger<CalificadorasController> _logger;
@@ -20,65 +20,77 @@ public class CalificadorasController : ControllerBase
         _mediator = mediator;
     }
 
+    // GetCalificadoras
     [HttpGet(Name = "GetCalificadoras")]
     [SwaggerOperation(
-        Summary = "",
-        Description = "",
-        OperationId = ""
+        Summary = "Obtener todas las calificadoras",
+        Description = "Obtiene la lista completa de calificadoras.",
+        OperationId = "ObtenerCalificadoras"
     )]
-    [SwaggerResponse(200, "")]
+    [Produces("application/json")]
+    [SwaggerResponse(200, "Operación exitosa", typeof(IEnumerable<GetCalificadorasQueryResponse>))]
     public async Task<IEnumerable<GetCalificadorasQueryResponse>> GetCalificadoras()
     {
-        _mediator.Send(new GetCalificacionesQuery());
+        return await _mediator.Send(new GetCalificadorasQuery());
     }
 
-    [HttpGet("{id:int}", Name = "GetCalificadora")]
+    // GetCalificadora
+    [HttpGet("{Id:int}", Name = "GetCalificadora")]
     [SwaggerOperation(
-        Summary = "",
-        Description = "",
-        OperationId = ""
+        Summary = "Obtener una calificadora por ID",
+        Description = "Obtiene los detalles de una calificadora específica según su ID.",
+        OperationId = "ObtenerCalificadoraPorID"
     )]
-    [SwaggerResponse(200, "")]
-    public async Task<GetCalificadoraQueryResponse> GetCalificadora([FromRoute] GetCalificadoraQuery query)
+    [Produces("application/json")]
+    [SwaggerResponse(200, "Operación exitosa", typeof(GetCalificadoraQueryResponse))]
+    [SwaggerResponse(404, "No encontrado", typeof(void))]
+    public Task<GetCalificadoraQueryResponse> GetCalificadora([FromRoute] GetCalificadoraQuery query)
     {
         return _mediator.Send(query);
     }
-    
+
+    // CreateCalificadora
     [HttpPost(Name = "CreateCalificadora")]
     [SwaggerOperation(
-        Summary = "",
-        Description = "",
-        OperationId = ""
+        Summary = "Crear una nueva calificadora",
+        Description = "Crea una nueva calificadora con la información proporcionada.",
+        OperationId = "CrearCalificadora"
     )]
-    [SwaggerResponse(200, "")]
+    [Consumes("application/json")]
+    [SwaggerResponse(201, "Operación exitosa", typeof(void))]
+    [SwaggerResponse(400, "Solicitud inválida", typeof(void))]
     public async Task<IActionResult> CreateCalificadora([FromBody] CreateCalificadoraCommand command)
     {
-        await _mediator.Send(command);
-
-        return Ok();
+        return CreatedAtRoute("GetCalificadora", await _mediator.Send(command));
     }
-    
-    [HttpPut("{id:int}", Name = "UpdateCalificadora")]
+
+    // UpdateCalificadora
+    [HttpPut("{Id:int}", Name = "UpdateCalificadora")]
     [SwaggerOperation(
-        Summary = "",
-        Description = "",
-        OperationId = ""
+        Summary = "Actualizar una calificadora por ID",
+        Description = "Actualiza los detalles de una calificadora específica según su ID.",
+        OperationId = "ActualizarCalificadoraPorID"
     )]
-    [SwaggerResponse(200, "")]
+    [Consumes("application/json")]
+    [SwaggerResponse(200, "Operación exitosa", typeof(void))]
+    [SwaggerResponse(400, "Solicitud inválida", typeof(void))]
+    [SwaggerResponse(404, "No encontrado", typeof(void))]
     public async Task<IActionResult> UpdateCalificadora([FromBody] UpdateCalificadoraCommand command)
     {
         await _mediator.Send(command);
 
         return Ok();
     }
-    
-    [HttpDelete("{id:int}", Name = "DeleteCalificadora")]
+
+    // DeleteCalificadora
+    [HttpDelete("{Id:int}", Name = "DeleteCalificadora")]
     [SwaggerOperation(
-        Summary = "",
-        Description = "",
-        OperationId = ""
+        Summary = "Eliminar una calificadora por ID",
+        Description = "Elimina una calificadora específica según su ID.",
+        OperationId = "EliminarCalificadoraPorID"
     )]
-    [SwaggerResponse(200, "")]
+    [SwaggerResponse(200, "Operación exitosa", typeof(void))]
+    [SwaggerResponse(404, "No encontrado", typeof(void))]
     public async Task<IActionResult> DeleteCalificadora([FromBody] DeleteCalificadoraCommand command)
     {
         await _mediator.Send(command);
