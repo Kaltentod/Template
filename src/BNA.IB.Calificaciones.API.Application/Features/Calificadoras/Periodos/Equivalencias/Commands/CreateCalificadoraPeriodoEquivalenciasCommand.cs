@@ -6,16 +6,14 @@ using FluentValidation.Results;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace BNA.IB.Calificaciones.API.Application.Features.Calificadoras.CalificadorasPeriodos.Commands;
+namespace BNA.IB.Calificaciones.API.Application.Features.Calificadoras.Periodos.Equivalencias.Commands;
 
 public class CreateCalificadoraPeriodoEquivalenciaCommand : IRequest<CreateCalificadoraPeriodoEquivalenciasCommandResponse>
 {
     public int CalificadoraId { get; set; }
     public DateOnly FechaAlta { get; set; }
-    public DateOnly? FechaBaja { get; set; } = DateOnly.Parse("01-01-2900");
+    public DateOnly? FechaBaja { get; set; } = DateOnly.FromDateTime(Const.FechaMax);
 }
-
-
 
 public class
     CreateCalificadoraPeriodoEquivalenciasCommandHandler : IRequestHandler<CreateCalificadoraPeriodoEquivalenciaCommand, CreateCalificadoraPeriodoEquivalenciasCommandResponse>
@@ -38,18 +36,11 @@ public class
         }
 
         if (calificadora.Periodos.Any(x => (x.FechaAlta <= request.FechaAlta.ToDateTime(TimeOnly.MinValue) || request.FechaAlta <= request.FechaBaja) && (x.FechaAlta <= ((DateOnly)request.FechaBaja).ToDateTime(TimeOnly.MinValue) || request.FechaBaja <= request.FechaBaja)))
-        {
-            var exceptions = new List<ValidationFailure>()
-            {
-                new ValidationFailure("FechaAlta","Esta entidad ya existe.")
-            };
-            throw new ValidationException(exceptions);
-        }
+            throw new ForbiddenException("Esta entidad ya existe.");
 
         var entity = new CalificadoraPeriodoEquivalencia
         {
-            FechaAlta = request.FechaAlta.ToDateTime(TimeOnly.MinValue),
-            FechaBaja = ((DateOnly)request.FechaBaja).ToDateTime(TimeOnly.MinValue)
+            Equivalencias = new List<Equivalencia>()
         };
 
         _context.CalificadoraPeriodoEquivalencias.Add(entity);

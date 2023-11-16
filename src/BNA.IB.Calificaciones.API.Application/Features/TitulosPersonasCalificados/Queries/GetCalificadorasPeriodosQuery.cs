@@ -2,7 +2,7 @@ using BNA.IB.Calificaciones.API.Application.Common;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace BNA.IB.Calificaciones.API.Application.Features.TituloPersonaCalificado.Queries;
+namespace BNA.IB.Calificaciones.API.Application.Features.TitulosPersonasCalificados.Queries;
 
 public class GetTitulosPersonasCalificadosQuery : IRequest<List<GetTitulosPersonasCalificadosQueryResponse>>
 {

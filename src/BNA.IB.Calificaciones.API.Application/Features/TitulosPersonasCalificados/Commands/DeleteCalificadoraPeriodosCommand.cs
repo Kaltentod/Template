@@ -1,7 +1,7 @@
 using BNA.IB.Calificaciones.API.Application.Common;
 using MediatR;
 
-namespace BNA.IB.Calificaciones.API.Application.Features.TituloPersonaCalificado.Commands;
+namespace BNA.IB.Calificaciones.API.Application.Features.TitulosPersonasCalificados.Commands;
 
 public class DeleteTituloPersonaCalificadoCommand : IRequest
 {

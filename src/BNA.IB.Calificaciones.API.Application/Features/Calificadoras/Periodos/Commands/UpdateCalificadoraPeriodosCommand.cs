@@ -1,13 +1,14 @@
 using BNA.IB.Calificaciones.API.Application.Common;
+using BNA.IB.Calificaciones.API.Domain;
 using MediatR;
 
-namespace BNA.IB.Calificaciones.API.Application.Features.Calificadoras.CalificadorasPeriodos.Commands;
+namespace BNA.IB.Calificaciones.API.Application.Features.Calificadoras.Periodos.Commands;
 
 public class UpdateCalificadoraPeriodosCommand : IRequest
 {
     public int Id { get; set; }
-    public DateTime FechaAlta { get; set; }
-    public DateTime? FechaBaja { get; set; }
+    public DateOnly FechaAlta { get; set; }
+    public DateOnly? FechaBaja { get; set; } = DateOnly.FromDateTime(Const.FechaMax);
 }
 
 public class UpdateCalificadoraPeriodosCommandHandler : IRequestHandler<UpdateCalificadoraPeriodosCommand>
@@ -25,8 +26,8 @@ public class UpdateCalificadoraPeriodosCommandHandler : IRequestHandler<UpdateCa
 
         if (entity is not null)
         {
-            entity.FechaAlta = request.FechaAlta;
-            entity.FechaBaja = request.FechaBaja;
+            entity.FechaAlta = request.FechaAlta.ToDateTime(TimeOnly.MinValue);
+            entity.FechaBaja = request.FechaBaja!.Value.ToDateTime(TimeOnly.MinValue);
         }
 
         await _context.SaveChangesAsync(cancellationToken);

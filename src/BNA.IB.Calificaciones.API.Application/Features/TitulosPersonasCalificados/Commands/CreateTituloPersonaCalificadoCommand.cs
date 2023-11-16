@@ -4,16 +4,16 @@ using BNA.IB.Calificaciones.API.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace BNA.IB.Calificaciones.API.Application.Features.TituloPersonaCalificado.Commands;
+namespace BNA.IB.Calificaciones.API.Application.Features.TitulosPersonasCalificados.Commands;
 
 public class CreateTituloPersonaCalificadoCommand : IRequest<CreateTituloPersonaCalificadoCommandResponse>
 {
-    public int CalificadoraId { get; set; }
+    public int CalificadoraPeriodoId { get; set; }
     public int BcraCalificacionId { get; set; }
     public TituloPersonaCalificadaTipo TituloPersonaCalificadaTipo {  get; set; }
     public string Clave {  get; set; }
-    public DateTime FechaAlta { get; set; }
-    public DateTime? FechaBaja { get; set; }
+    public DateOnly FechaAlta { get; set; }
+    public DateOnly? FechaBaja { get; set; } = DateOnly.FromDateTime(Const.FechaMax);
 }
 
 
@@ -33,16 +33,19 @@ public class
 
         //var newEntity = CopiarPropiedades<CreateTituloPersonaCalificadoCommand, TituloPersonaCalificada>(request);
 
-        var tituloSuperpuesto = _context.TituloPersonaCalificadas.Any(x => x.Clave != request.Clave && (x.FechaAlta <= request.FechaAlta || request.FechaAlta <= request.FechaBaja) && (x.FechaAlta <= request.FechaBaja || request.FechaBaja <= request.FechaBaja));
+        var tituloSuperpuesto = _context.TituloPersonaCalificadas
+            .Any(x => x.Clave != request.Clave 
+                      && (DateOnly.FromDateTime(x.FechaAlta) <= request.FechaAlta || request.FechaAlta <= request.FechaBaja) 
+                          && DateOnly.FromDateTime(x.FechaAlta.Date) <= request.FechaBaja);
 
         var entity = new TituloPersonaCalificada
         {
             Clave = request.Clave,
-            FechaAlta = request.FechaAlta,
-            FechaBaja = request.FechaBaja,
-            Calificadora = new Calificadora
+            FechaAlta = request.FechaAlta.ToDateTime(TimeOnly.MinValue),
+            FechaBaja = request.FechaBaja!.Value.ToDateTime(TimeOnly.MinValue),
+            CalificadoraPeriodoId = new Calificadora
             {
-                Id = request.CalificadoraId
+                Id = request.CalificadoraPeriodoId
             },
             BcraCalificacion = new BCRACalificacion
             {

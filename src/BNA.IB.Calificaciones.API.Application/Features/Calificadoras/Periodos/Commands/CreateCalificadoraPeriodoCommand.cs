@@ -1,14 +1,10 @@
 using BNA.IB.Calificaciones.API.Application.Common;
 using BNA.IB.Calificaciones.API.Application.Exceptions;
-using BNA.IB.Calificaciones.API.Application.Features.Calificadoras.Commands;
-using BNA.IB.Calificaciones.API.Domain;
 using BNA.IB.Calificaciones.API.Domain.Entities;
 using FluentValidation;
-using FluentValidation.Results;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
-namespace BNA.IB.Calificaciones.API.Application.Features.Calificadoras.CalificadorasPeriodos.Commands;
+namespace BNA.IB.Calificaciones.API.Application.Features.Calificadoras.Periodos.Commands;
 
 public class CreateCalificadoraPeriodoCommand : IRequest<CreateCalificadoraPeriodosCommandResponse>
 {
@@ -49,18 +45,12 @@ public class
         }
 
         if (calificadora.Periodos.Any(x => (x.FechaAlta <= request.FechaAlta.ToDateTime(TimeOnly.MinValue) || request.FechaAlta <= request.FechaBaja) && (x.FechaAlta <= ((DateOnly)request.FechaBaja).ToDateTime(TimeOnly.MinValue) || request.FechaBaja <= request.FechaBaja)))
-        {
-            var exceptions = new List<ValidationFailure>()
-            {
-                new ValidationFailure("FechaAlta","Esta entidad ya existe.")
-            };
-            throw new ValidationException(exceptions);
-        }
+            throw new ForbiddenException("Esta entidad ya existe.");
 
         var entity = new CalificadoraPeriodo
         {
             FechaAlta = request.FechaAlta.ToDateTime(TimeOnly.MinValue),
-            FechaBaja = ((DateOnly)request.FechaBaja).ToDateTime(TimeOnly.MinValue)
+            FechaBaja = request.FechaBaja!.Value.ToDateTime(TimeOnly.MinValue)
         };
 
         _context.CalificadoraPeriodos.Add(entity);

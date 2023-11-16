@@ -25,10 +25,7 @@ public class DeleteCalificadoraCommandHandler : IRequestHandler<DeleteCalificado
     {
         var entity = await _context.Calificadoras.FindAsync(request.Id);
         
-        if (entity is null)
-        {
-            throw new NotFoundException(nameof(Calificadora), request.Id);
-        }
+        if (entity is null) throw new NotFoundException(nameof(Calificadora), request.Id);
 
         if (entity.Periodos != null)
         {

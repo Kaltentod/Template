@@ -1,14 +1,14 @@
 using BNA.IB.Calificaciones.API.Application.Common;
 using MediatR;
 
-namespace BNA.IB.Calificaciones.API.Application.Features.Calificadoras.CalificadorasPeriodos.Queries;
+namespace BNA.IB.Calificaciones.API.Application.Features.Calificadoras.Periodos.Queries;
 
-public class GetCalificadoraPeriodosEquivalenciaQuery : IRequest<GetCalificadoraPeriodosQueryResponse>
+public class GetCalificadoraPeriodosQuery : IRequest<GetCalificadoraPeriodosQueryResponse>
 {
     public int Id { get; set; }
 }
 
-public class GetCalificadoraPeriodosQueryHandler : IRequestHandler<GetCalificadoraPeriodosEquivalenciaQuery, GetCalificadoraPeriodosQueryResponse>
+public class GetCalificadoraPeriodosQueryHandler : IRequestHandler<GetCalificadoraPeriodosQuery, GetCalificadoraPeriodosQueryResponse>
 {
     private readonly IApplicationDbContext _context;
 
@@ -18,7 +18,7 @@ public class GetCalificadoraPeriodosQueryHandler : IRequestHandler<GetCalificado
     }
 
     public async Task<GetCalificadoraPeriodosQueryResponse> Handle(
-        GetCalificadoraPeriodosEquivalenciaQuery request, CancellationToken cancellationToken)
+        GetCalificadoraPeriodosQuery request, CancellationToken cancellationToken)
     {
         var entity = await _context.CalificadoraPeriodos.FindAsync(request.Id);
 

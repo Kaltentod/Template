@@ -1,5 +1,6 @@
 using BNA.IB.Calificaciones.API.Application.Common;
 using BNA.IB.Calificaciones.API.Application.Exceptions;
+using BNA.IB.Calificaciones.API.Domain;
 using BNA.IB.Calificaciones.API.Domain.Entities;
 using FluentValidation;
 using MediatR;
@@ -13,8 +14,8 @@ public class UpdateCalificadoraCommand : IRequest
     public string Nombre { get; set; }
     public DateOnly FechaAlta { get; set; }
     public DateOnly FechaAltaBCRA { get; set; }
-    public DateOnly? FechaBaja { get; set; } = DateOnly.Parse("01-01-2900");
-    public DateOnly? FechaBajaBCRA { get; set; } = DateOnly.Parse("01-01-2900");
+    public DateOnly? FechaBaja { get; set; } = DateOnly.FromDateTime(Const.FechaMax);
+    public DateOnly? FechaBajaBCRA { get; set; } = DateOnly.FromDateTime(Const.FechaMax);
 }
 
 public class UpdateCalificadoraValidator : AbstractValidator<UpdateCalificadoraCommand> 
@@ -45,21 +46,16 @@ public class UpdateCalificadoraCommandHandler : IRequestHandler<UpdateCalificado
     {
         var entity = await _context.Calificadoras.FindAsync(request.Id);
 
-        if (entity is null)
-        {
-            throw new NotFoundException(nameof(Calificadora), request.Id);
-        }
+        if (entity is null) throw new NotFoundException(nameof(Calificadora), request.Id);
 
         if (_context.Calificadoras.Any(x => x.Clave != request.Clave && x.Nombre == request.Nombre))
-        {
-            throw new Exception("Esta entidad ya existe.");
-        }
+            throw new ForbiddenException("Esta entidad ya existe.");
 
         entity.Nombre = request.Nombre;
         entity.FechaAlta = request.FechaAlta.ToDateTime(TimeOnly.MinValue);
         entity.FechaAltaBCRA = request.FechaAltaBCRA.ToDateTime(TimeOnly.MinValue);
-        entity.FechaBaja = request.FechaBaja == null ? DateTime.Parse("01-01-2900") : ((DateOnly)request.FechaBaja).ToDateTime(TimeOnly.MinValue);
-        entity.FechaBajaBCRA = request.FechaBajaBCRA == null ? DateTime.Parse("01-01-2900") : ((DateOnly)request.FechaBajaBCRA).ToDateTime(TimeOnly.MinValue);
+        entity.FechaBaja = request.FechaBaja!.Value.ToDateTime(TimeOnly.MinValue);
+        entity.FechaBajaBCRA = request.FechaBajaBCRA!.Value.ToDateTime(TimeOnly.MinValue);
 
         await _context.SaveChangesAsync(cancellationToken);
     }

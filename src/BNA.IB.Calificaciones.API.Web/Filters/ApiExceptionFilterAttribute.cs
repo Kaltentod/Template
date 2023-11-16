@@ -16,7 +16,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
             case NotFoundException notFoundEx:
                 HandleNotFoundException(context, notFoundEx);
                 break;
-            case ForbiddenAccessException:
+            case ForbiddenException:
                 HandleForbiddenAccessException(context);
                 break;
             default:

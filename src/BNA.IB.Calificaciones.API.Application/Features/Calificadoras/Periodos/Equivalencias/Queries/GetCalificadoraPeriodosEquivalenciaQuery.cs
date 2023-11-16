@@ -1,7 +1,7 @@
 using BNA.IB.Calificaciones.API.Application.Common;
 using MediatR;
 
-namespace BNA.IB.Calificaciones.API.Application.Features.Calificadoras.CalificadorasPeriodos.Queries;
+namespace BNA.IB.Calificaciones.API.Application.Features.Calificadoras.Periodos.Equivalencias.Queries;
 
 public class GetCalificadoraPeriodoEquivalenciaEquivalenciaQuery : IRequest<GetCalificadoraPeriodoEquivalenciaQueryResponse>
 {
@@ -20,13 +20,11 @@ public class GetCalificadoraPeriodoEquivalenciaQueryHandler : IRequestHandler<Ge
     public async Task<GetCalificadoraPeriodoEquivalenciaQueryResponse> Handle(
         GetCalificadoraPeriodoEquivalenciaEquivalenciaQuery request, CancellationToken cancellationToken)
     {
-        var entity = await _context.CalificadoraPeriodoEquivalencia.FindAsync(request.Id);
+        var entity = await _context.CalificadoraPeriodoEquivalencias.FindAsync(request.Id);
 
         return new GetCalificadoraPeriodoEquivalenciaQueryResponse
         {
-            Id = entity.Id,
-            FechaAlta = entity.FechaAlta,
-            FechaBaja = entity.FechaBaja,
+            Id = entity.Id
         };
     }
 }
@@ -34,6 +32,4 @@ public class GetCalificadoraPeriodoEquivalenciaQueryHandler : IRequestHandler<Ge
 public class GetCalificadoraPeriodoEquivalenciaQueryResponse
 {
     public int Id { get; set; }
-    public DateTime FechaAlta { get; set; }
-    public DateTime? FechaBaja { get; set; }
 }

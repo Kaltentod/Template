@@ -2,7 +2,7 @@ using BNA.IB.Calificaciones.API.Application.Common;
 using BNA.IB.Calificaciones.API.Domain.Entities;
 using MediatR;
 
-namespace BNA.IB.Calificaciones.API.Application.Features.TituloPersonaCalificado.Commands;
+namespace BNA.IB.Calificaciones.API.Application.Features.TitulosPersonasCalificados.Commands;
 
 public class UpdateTituloPersonaCalificadoCommand : IRequest
 {
