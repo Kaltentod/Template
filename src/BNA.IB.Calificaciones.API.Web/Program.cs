@@ -16,16 +16,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Serilog
 builder.Host.UseSerilog();
 
-var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version!.ToString();
-
-Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-    .Enrich.FromLogContext()
-    .Enrich.WithProperty("AssemblyVersion", assemblyVersion) 
-    .WriteTo.Console()
-    .WriteTo.File($"{Assembly.GetExecutingAssembly().GetName().FullName}-.log", rollingInterval: RollingInterval.Day)
-    .CreateLogger();
-
 // Cors
 builder.Services.AddCors(options =>
 {
@@ -68,6 +58,18 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+// Logging
+var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version!.ToString();
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .Enrich.WithProperty("AssemblyVersion", assemblyVersion) 
+    .WriteTo.Console()
+    .WriteTo.File($"{Assembly.GetExecutingAssembly().GetName().FullName}-.log", rollingInterval: RollingInterval.Day) 
+    //.WriteTo.ApplicationInsights(app.Services.GetRequiredService<TelemetryConfiguration>(), TelemetryConverter.Traces)
+    .CreateLogger();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
