@@ -8,32 +8,54 @@ using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Serilog
+builder.Host.UseSerilog();
 
+var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version!.ToString();
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .Enrich.WithProperty("AssemblyVersion", assemblyVersion) 
+    .WriteTo.Console()
+    .WriteTo.File($"{Assembly.GetExecutingAssembly().GetName().FullName}-.log", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+// Cors
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(
         policy => { policy.WithOrigins("*"); });
 });
 
+// Persistence
 builder.Services.AddPersistence(builder.Configuration, builder.Environment);
 
+// mediatR
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(Assembly.GetAssembly(typeof(GetCalificadorasQueryHandler))!));
 
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+    options.SuppressModelStateInvalidFilter = true);
+
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+
+
+// FluentValidation
 builder.Services.AddControllers(options =>
         options.Filters.Add<ApiExceptionFilterAttribute>())
     .AddFluentValidation();
-builder.Services.Configure<ApiBehaviorOptions>(options =>
-    options.SuppressModelStateInvalidFilter = true);
-builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
 builder.Services.AddEndpointsApiExplorer();
 
+// Swagger
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -66,4 +88,17 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+try
+{
+    Log.Information("Iniciando BNA.Calificaciones.API - Versión {version}", assemblyVersion);
+
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Host terminated unexpectedly.");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
