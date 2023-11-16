@@ -28,8 +28,9 @@ public class CalificadoraPeriodosController : ControllerBase
         OperationId = "ObtenerCalificadoraPeriodos"
     )]
     [Produces("application/json")]
-    [SwaggerResponse(200, "Operación exitosa", typeof(IEnumerable<GetCalificadoraPeriodosQueryResponse>))]
-    public async Task<IEnumerable<GetCalificadoraPeriodosQueryResponse>> GetCalificadoraPeriodos()
+    [SwaggerResponse(200, "Operación exitosa", typeof(IEnumerable<GetCalificadorasPeriodosQueryResponse>))]
+    [SwaggerResponse(400, "Solicitud inválida", typeof(void))]
+    public async Task<IEnumerable<GetCalificadorasPeriodosQueryResponse>> GetCalificadoraPeriodos()
     {
         return await _mediator.Send(new GetCalificadoraPeriodosQuery());
     }
@@ -37,12 +38,13 @@ public class CalificadoraPeriodosController : ControllerBase
     // GetCalificadoraPeriodo
     [HttpGet("{Id:int}", Name = "GetCalificadoraPeriodo")]
     [SwaggerOperation(
-        Summary = "Obtener una calificadora por ID",
-        Description = "Obtiene los detalles de una calificadora específica según su ID.",
-        OperationId = "ObtenerCalificadoraPorID"
+        Summary = "Obtener un calificadora periodo por ID",
+        Description = "Obtiene los detalles de un calificadora periodo específico según su ID.",
+        OperationId = "ObtenerCalificadoraPeriodosPorID"
     )]
     [Produces("application/json")]
     [SwaggerResponse(200, "Operación exitosa", typeof(GetCalificadoraPeriodoQueryResponse))]
+    [SwaggerResponse(400, "Solicitud inválida", typeof(void))]
     [SwaggerResponse(404, "No encontrado", typeof(void))]
     public Task<GetCalificadoraPeriodoQueryResponse> GetCalificadora([FromRoute] GetCalificadoraPeriodoQuery query)
     {
@@ -52,13 +54,14 @@ public class CalificadoraPeriodosController : ControllerBase
     // CreateCalificadora
     [HttpPost(Name = "CreateCalificadoraPeriodo")]
     [SwaggerOperation(
-        Summary = "Crear una nueva calificadoraPeriodo",
-        Description = "Crea una nueva calificadoraPeriodo con la información proporcionada.",
+        Summary = "Crear una nueva calificadora periodo",
+        Description = "Crea una nueva calificadora periodo con la información proporcionada.",
         OperationId = "CrearCalificadoraPeriodo"
     )]
     [Consumes("application/json")]
     [SwaggerResponse(201, "Operación exitosa", typeof(void))]
     [SwaggerResponse(400, "Solicitud inválida", typeof(void))]
+    [SwaggerResponse(404, "No encontrado", typeof(void))]
     public async Task<IActionResult> CreateCalificadoraPeriodo([FromBody] CreateCalificadoraPeriodoCommand command)
     {
         var response = await _mediator.Send(command);
@@ -68,9 +71,9 @@ public class CalificadoraPeriodosController : ControllerBase
     // UpdateCalificadoraPeriodo
     [HttpPut("{Id:int}", Name = "UpdateCalificadoraPeriodo")]
     [SwaggerOperation(
-        Summary = "Actualizar una calificadora por ID",
-        Description = "Actualiza los detalles de una calificadora específica según su ID.",
-        OperationId = "ActualizarCalificadoraPorID"
+        Summary = "Actualizar un calificadora periodo por ID",
+        Description = "Actualiza los detalles de una calificadora periodo específica según su ID.",
+        OperationId = "ActualizarCalificadoraPeriodoPorID"
     )]
     [Consumes("application/json")]
     [SwaggerResponse(200, "Operación exitosa", typeof(void))]
@@ -86,11 +89,12 @@ public class CalificadoraPeriodosController : ControllerBase
     // DeleteCalificadoraPeriodo
     [HttpDelete("{Id:int}", Name = "DeleteCalificadoraPeriodo")]
     [SwaggerOperation(
-        Summary = "Eliminar una calificadoraPeriodo por ID",
-        Description = "Elimina una calificadoraPeriodo específica según su ID.",
+        Summary = "Eliminar una calificadora periodo por ID",
+        Description = "Elimina una calificadora periodo específica según su ID.",
         OperationId = "EliminarCalificadoraPeriodoPorID"
     )]
     [SwaggerResponse(200, "Operación exitosa", typeof(void))]
+    [SwaggerResponse(400, "Solicitud inválida", typeof(void))]
     [SwaggerResponse(404, "No encontrado", typeof(void))]
     public async Task<IActionResult> DeleteCalificadoraPeriodo([FromBody] DeleteCalificadoraPeriodoCommand command)
     {

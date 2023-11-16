@@ -20,7 +20,7 @@ public class GetTituloPersonaCalificadoQueryHandler : IRequestHandler<GetTituloP
     public async Task<GetTituloPersonaCalificadoQueryResponse> Handle(
         GetTituloPersonaCalificadoQuery request, CancellationToken cancellationToken)
     {
-        var entity = await _context.TituloPersonaCalificado.FindAsync(request.Id);
+        var entity = await _context.TituloPersonaCalificadas.FindAsync(request.Id);
 
         return new GetTituloPersonaCalificadoQueryResponse
         {

@@ -31,22 +31,23 @@ public class
         CancellationToken cancellationToken)
     {
 
-        //var newEntity = CopiarPropiedades<CreateTituloPersonaCalificadoCommand, TituloPersonaCalificada>(request);
-
         var tituloSuperpuesto = _context.TituloPersonaCalificadas
-            .Any(x => x.Clave != request.Clave 
-                      && (DateOnly.FromDateTime(x.FechaAlta) <= request.FechaAlta || request.FechaAlta <= request.FechaBaja) 
-                          && DateOnly.FromDateTime(x.FechaAlta.Date) <= request.FechaBaja);
+            .Any(x => x.Clave == request.Clave && x.Tipo == request.TituloPersonaCalificadaTipo 
+                && (
+                    (DateOnly.FromDateTime(x.FechaAlta) <= request.FechaAlta && request.FechaAlta <= DateOnly.FromDateTime(x.FechaBaja))
+                    || (DateOnly.FromDateTime(x.FechaAlta) <= request.FechaBaja && request.FechaBaja <= DateOnly.FromDateTime(x.FechaBaja))
+                    || 
+                    ((request.FechaAlta <= DateOnly.FromDateTime(x.FechaAlta) && DateOnly.FromDateTime(x.FechaAlta) <= request.FechaBaja)
+                    || request.FechaAlta <= DateOnly.FromDateTime(x.FechaBaja) && request.FechaBaja <= request.FechaBaja))
+                );
+
+
 
         var entity = new TituloPersonaCalificada
         {
             Clave = request.Clave,
             FechaAlta = request.FechaAlta.ToDateTime(TimeOnly.MinValue),
             FechaBaja = request.FechaBaja!.Value.ToDateTime(TimeOnly.MinValue),
-            CalificadoraPeriodoId = new Calificadora
-            {
-                Id = request.CalificadoraPeriodoId
-            },
             BcraCalificacion = new BCRACalificacion
             {
                 Id = request.BcraCalificacionId

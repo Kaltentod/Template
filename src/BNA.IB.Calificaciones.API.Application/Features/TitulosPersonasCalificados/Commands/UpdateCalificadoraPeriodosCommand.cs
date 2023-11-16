@@ -33,8 +33,8 @@ public class UpdateTituloPersonaCalificadoCommandHandler : IRequestHandler<Updat
             entity.Tipo = request.TituloPersonaCalificadaTipo;
             entity.Clave = request.Clave;
             entity.FechaAlta = request.FechaAlta;
-            entity.FechaBaja = request.FechaBaja;
-            entity.Calificadora.Id = request.CalificadoraId;
+            //entity.FechaBaja = request.FechaBaja;
+            //entity.Calificadora.Id = request.CalificadoraId;
             entity.BcraCalificacion.Id = request.BcraCalificacionId;
         }
 

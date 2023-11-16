@@ -1,18 +1,14 @@
 using BNA.IB.Calificaciones.API.Application.Common;
 using BNA.IB.Calificaciones.API.Application.Exceptions;
-using BNA.IB.Calificaciones.API.Domain;
 using BNA.IB.Calificaciones.API.Domain.Entities;
-using FluentValidation.Results;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace BNA.IB.Calificaciones.API.Application.Features.Calificadoras.Periodos.Equivalencias.Commands;
 
 public class CreateCalificadoraPeriodoEquivalenciaCommand : IRequest<CreateCalificadoraPeriodoEquivalenciasCommandResponse>
 {
-    public int CalificadoraId { get; set; }
-    public DateOnly FechaAlta { get; set; }
-    public DateOnly? FechaBaja { get; set; } = DateOnly.FromDateTime(Const.FechaMax);
+    public int PeriodoId { get; set; }
+    public List<Equivalencia> Equivalencias { get; set; }
 }
 
 public class
@@ -28,19 +24,18 @@ public class
     public async Task<CreateCalificadoraPeriodoEquivalenciasCommandResponse> Handle(CreateCalificadoraPeriodoEquivalenciaCommand request,
         CancellationToken cancellationToken)
     {
-        var calificadora = await _context.Calificadoras.FindAsync(request.CalificadoraId);
+        var periodo = await _context.Calificadoras.FindAsync(request.PeriodoId);
 
-        if (calificadora is null)
+        if (periodo == null) throw new NotFoundException();
+
+        if (request.Equivalencias.Count == 0)
         {
-            throw new NotFoundException(nameof(Calificadora), request.CalificadoraId);
+            throw new ForbiddenException("No hay equivalencias.");
         }
-
-        if (calificadora.Periodos.Any(x => (x.FechaAlta <= request.FechaAlta.ToDateTime(TimeOnly.MinValue) || request.FechaAlta <= request.FechaBaja) && (x.FechaAlta <= ((DateOnly)request.FechaBaja).ToDateTime(TimeOnly.MinValue) || request.FechaBaja <= request.FechaBaja)))
-            throw new ForbiddenException("Esta entidad ya existe.");
 
         var entity = new CalificadoraPeriodoEquivalencia
         {
-            Equivalencias = new List<Equivalencia>()
+            Equivalencias = request.Equivalencias
         };
 
         _context.CalificadoraPeriodoEquivalencias.Add(entity);

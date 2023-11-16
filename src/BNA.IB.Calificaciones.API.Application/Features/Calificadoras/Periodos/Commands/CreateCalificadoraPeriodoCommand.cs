@@ -1,5 +1,6 @@
 using BNA.IB.Calificaciones.API.Application.Common;
 using BNA.IB.Calificaciones.API.Application.Exceptions;
+using BNA.IB.Calificaciones.API.Domain;
 using BNA.IB.Calificaciones.API.Domain.Entities;
 using FluentValidation;
 using MediatR;
@@ -10,17 +11,17 @@ public class CreateCalificadoraPeriodoCommand : IRequest<CreateCalificadoraPerio
 {
     public int CalificadoraId { get; set; }
     public DateOnly FechaAlta { get; set; }
-    public DateOnly? FechaBaja { get; set; } = DateOnly.Parse("01-01-2900");
+    public DateOnly? FechaBaja { get; set; } = DateOnly.FromDateTime(Const.FechaMax);
 }
 
 public class CreateCalificadoraPeriodoValidator : AbstractValidator<CreateCalificadoraPeriodoCommand>
 {
     public CreateCalificadoraPeriodoValidator()
     {
-        RuleFor(x => x.CalificadoraId).NotNull().GreaterThan(0);
-        RuleFor(x => x.FechaAlta).NotNull();
+        RuleFor(x => x.CalificadoraId).NotNull().WithMessage("Calificadora no puede ser nulo.");
+        RuleFor(x => x.FechaAlta).NotNull().WithMessage("La fecha de alta no puede ser nula.");
         RuleFor(x => x.FechaBaja).GreaterThanOrEqualTo(x => x.FechaAlta)
-            .When(x => x.FechaBaja.HasValue);
+            .When(x => x.FechaBaja.HasValue).WithMessage("La fecha de baja debe ser mayor o igual a la fecha de alta.");
     }
 }
 
@@ -44,7 +45,7 @@ public class
             throw new NotFoundException(nameof(Calificadora), request.CalificadoraId);
         }
 
-        if (calificadora.Periodos.Any(x => (x.FechaAlta <= request.FechaAlta.ToDateTime(TimeOnly.MinValue) || request.FechaAlta <= request.FechaBaja) && (x.FechaAlta <= ((DateOnly)request.FechaBaja).ToDateTime(TimeOnly.MinValue) || request.FechaBaja <= request.FechaBaja)))
+        if (calificadora.Periodos.Any(x => (x.FechaAlta <= request.FechaAlta.ToDateTime(TimeOnly.MinValue) || request.FechaAlta <= request.FechaBaja) && (x.FechaAlta <= request.FechaBaja!.Value.ToDateTime(TimeOnly.MinValue) || request.FechaBaja <= request.FechaBaja)))
             throw new ForbiddenException("Esta entidad ya existe.");
 
         var entity = new CalificadoraPeriodo
