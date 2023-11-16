@@ -9,4 +9,13 @@ public class Calificadora : AuditEntity
     public DateTime FechaAltaBCRA { get; set; }
     public DateTime FechaBajaBCRA { get; set; } = Const.FechaMax;
     public ICollection<CalificadoraPeriodo> Periodos { get; set; }
+
+    public CalificadoraPeriodo ObtenerPeriodo(DateOnly fechaAlta)
+    {
+        return Periodos.FirstOrDefault(periodo =>
+            fechaAlta >= DateOnly.FromDateTime(periodo.FechaAlta) &&
+            fechaAlta <= (periodo.FechaBaja == Const.FechaMax
+                ? DateOnly.FromDateTime(Const.FechaMax)
+                : DateOnly.FromDateTime(periodo.FechaBaja)))!;
+    }
 }
