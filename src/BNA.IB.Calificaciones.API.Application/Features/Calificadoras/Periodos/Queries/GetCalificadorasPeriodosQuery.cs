@@ -2,7 +2,7 @@ using BNA.IB.Calificaciones.API.Application.Common;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace BNA.IB.Calificaciones.API.Application.Features.CalificadorasPeriodos.Queries;
+namespace BNA.IB.Calificaciones.API.Application.Features.Calificadoras.CalificadorasPeriodos.Queries;
 
 public class GetCalificadorasPeriodosQuery : IRequest<List<GetCalificadorasPeriodosQueryResponse>>
 {

@@ -1,7 +1,9 @@
 using BNA.IB.Calificaciones.API.Application.Common;
 using BNA.IB.Calificaciones.API.Application.Exceptions;
 using BNA.IB.Calificaciones.API.Domain.Entities;
+using FluentValidation.Results;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace BNA.IB.Calificaciones.API.Application.Features.Calificadoras.Commands;
 
@@ -26,6 +28,16 @@ public class DeleteCalificadoraCommandHandler : IRequestHandler<DeleteCalificado
         if (entity is null)
         {
             throw new NotFoundException(nameof(Calificadora), request.Id);
+        }
+
+        if (entity.Periodos != null)
+        {
+            var exceptions = new List<ValidationFailure>()
+            {
+                new ValidationFailure("Nombre","Existen Peridos Asociados.")
+            };
+
+            throw new ValidationException(exceptions);
         }
 
         _context.Calificadoras.Remove(entity);

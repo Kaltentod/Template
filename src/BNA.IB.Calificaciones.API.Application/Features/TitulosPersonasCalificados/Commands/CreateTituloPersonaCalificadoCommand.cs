@@ -33,7 +33,7 @@ public class
 
         //var newEntity = CopiarPropiedades<CreateTituloPersonaCalificadoCommand, TituloPersonaCalificada>(request);
 
-        var tituloSuperpuesto = _context.TituloPersonaCalificadas.Any(x => x.Clave != request.Clave && (x.FechaAlta <= request.FechaAlta || request.FechaAlta <= request.FechaBaja) && (x.FechaAlta <= request.FechaBaja || request.FechaBaja <= request.FechaBaja))
+        var tituloSuperpuesto = _context.TituloPersonaCalificadas.Any(x => x.Clave != request.Clave && (x.FechaAlta <= request.FechaAlta || request.FechaAlta <= request.FechaBaja) && (x.FechaAlta <= request.FechaBaja || request.FechaBaja <= request.FechaBaja));
 
         var entity = new TituloPersonaCalificada
         {

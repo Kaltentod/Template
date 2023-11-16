@@ -2,7 +2,9 @@ using BNA.IB.Calificaciones.API.Application.Common;
 using BNA.IB.Calificaciones.API.Application.Exceptions;
 using BNA.IB.Calificaciones.API.Domain.Entities;
 using FluentValidation;
+using FluentValidation.Results;
 using MediatR;
+using ValidationException = BNA.IB.Calificaciones.API.Application.Exceptions.ValidationException;
 
 namespace BNA.IB.Calificaciones.API.Application.Features.Calificadoras.Commands;
 
@@ -12,8 +14,8 @@ public class CreateCalificadoraCommand : IRequest<CreateCalificadoraCommandRespo
     public string Nombre { get; set; }
     public DateOnly FechaAlta { get; set; }
     public DateOnly FechaAltaBCRA { get; set; }
-    public DateOnly? FechaBaja { get; set; }
-    public DateOnly? FechaBajaBCRA { get; set; }
+    public DateOnly? FechaBaja { get; set; } = DateOnly.Parse("01-01-2900");
+    public DateOnly? FechaBajaBCRA { get; set; } = DateOnly.Parse("01-01-2900");
 }
 
 public class CreateCalificadoraValidator : AbstractValidator<CreateCalificadoraCommand> 
@@ -47,7 +49,11 @@ public class
 
         if (_context.Calificadoras.Any(x => x.Clave != request.Clave && x.Nombre == request.Nombre))
         {
-            throw new Exception("Esta entidad ya existe.");
+            var exceptions = new List<ValidationFailure>()
+            {
+                new ValidationFailure("Nombre","Esta entidad ya existe.")
+            };
+            throw new ValidationException(exceptions);
         }
 
         var entity = new Calificadora
@@ -56,7 +62,7 @@ public class
             Nombre = request.Nombre,
             FechaAlta = request.FechaAlta.ToDateTime(TimeOnly.MinValue),
             FechaAltaBCRA = request.FechaAltaBCRA.ToDateTime(TimeOnly.MinValue),
-            FechaBaja = request.FechaBaja == null ? : ((DateOnly)request.FechaBaja).ToDateTime(TimeOnly.MinValue),
+            FechaBaja = request.FechaBaja == null ? DateTime.Parse("01-01-2900") : ((DateOnly)request.FechaBaja).ToDateTime(TimeOnly.MinValue),
             FechaBajaBCRA = request.FechaBajaBCRA == null ? DateTime.Parse("01-01-2900") : ((DateOnly)request.FechaBajaBCRA).ToDateTime(TimeOnly.MinValue)
         };
 

@@ -1,7 +1,7 @@
 using BNA.IB.Calificaciones.API.Application.Common;
 using MediatR;
 
-namespace BNA.IB.Calificaciones.API.Application.Features.CalificadorasPeriodos.Commands;
+namespace BNA.IB.Calificaciones.API.Application.Features.Calificadoras.CalificadorasPeriodos.Commands;
 
 public class UpdateCalificadoraPeriodosCommand : IRequest
 {

@@ -50,8 +50,16 @@ public class UpdateCalificadoraCommandHandler : IRequestHandler<UpdateCalificado
             throw new NotFoundException(nameof(Calificadora), request.Id);
         }
 
-        entity.Clave = request.Clave;
+        if (_context.Calificadoras.Any(x => x.Clave != request.Clave && x.Nombre == request.Nombre))
+        {
+            throw new Exception("Esta entidad ya existe.");
+        }
+
         entity.Nombre = request.Nombre;
+        entity.FechaAlta = request.FechaAlta.ToDateTime(TimeOnly.MinValue);
+        entity.FechaAltaBCRA = request.FechaAltaBCRA.ToDateTime(TimeOnly.MinValue);
+        entity.FechaBaja = request.FechaBaja == null ? DateTime.Parse("01-01-2900") : ((DateOnly)request.FechaBaja).ToDateTime(TimeOnly.MinValue);
+        entity.FechaBajaBCRA = request.FechaBajaBCRA == null ? DateTime.Parse("01-01-2900") : ((DateOnly)request.FechaBajaBCRA).ToDateTime(TimeOnly.MinValue);
 
         await _context.SaveChangesAsync(cancellationToken);
     }
