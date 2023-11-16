@@ -1,37 +1,46 @@
 using BNA.IB.Calificaciones.API.Application.Common;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace BNA.IB.Calificaciones.API.Application.Features.Calificadoras.Periodos.Queries;
 
-public class GetCalificadoraPeriodosQuery : IRequest<GetCalificadoraPeriodosQueryResponse>
+public class GetCalificadoraPeriodosQuery : IRequest<List<GetCalificadorasPeriodosQueryResponse>>
 {
-    public int Id { get; set; }
 }
 
-public class GetCalificadoraPeriodosQueryHandler : IRequestHandler<GetCalificadoraPeriodosQuery, GetCalificadoraPeriodosQueryResponse>
+public class GetCalificadorasPeriodosQueryHandler : IRequestHandler<GetCalificadoraPeriodosQuery, List<GetCalificadorasPeriodosQueryResponse>>
 {
     private readonly IApplicationDbContext _context;
 
-    public GetCalificadoraPeriodosQueryHandler(IApplicationDbContext context)
+    public GetCalificadorasPeriodosQueryHandler(IApplicationDbContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-    public async Task<GetCalificadoraPeriodosQueryResponse> Handle(
+    public Task<List<GetCalificadorasPeriodosQueryResponse>> Handle(
         GetCalificadoraPeriodosQuery request, CancellationToken cancellationToken)
     {
-        var entity = await _context.CalificadoraPeriodos.FindAsync(request.Id);
-
-        return new GetCalificadoraPeriodosQueryResponse
+        try
         {
-            Id = entity.Id,
-            FechaAlta = entity.FechaAlta,
-            FechaBaja = entity.FechaBaja,
-        };
+            return _context.CalificadoraPeriodos
+                .AsNoTracking()
+                .Select(e => new GetCalificadorasPeriodosQueryResponse
+                {
+                    Id = e.Id,
+                    FechaAlta = e.FechaAlta,
+                    FechaBaja = e.FechaBaja
+                })
+                .ToListAsync(cancellationToken);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error al obtener las calificadoras: {e.Message}");
+            throw;
+        }
     }
 }
 
-public class GetCalificadoraPeriodosQueryResponse
+public class GetCalificadorasPeriodosQueryResponse
 {
     public int Id { get; set; }
     public DateTime FechaAlta { get; set; }

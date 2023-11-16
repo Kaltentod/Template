@@ -22,14 +22,23 @@ public class UpdateCalificadoraValidator : AbstractValidator<UpdateCalificadoraC
 {
     public UpdateCalificadoraValidator() 
     {
-        RuleFor(x => x.Clave).NotNull();
-        RuleFor(x => x.Nombre).Length(3, 50);
-        RuleFor(x => x.FechaAlta).NotNull();
-        RuleFor(x => x.FechaAltaBCRA).NotNull();
-        RuleFor(x => x.FechaBaja).GreaterThanOrEqualTo(x => x.FechaAlta)
-            .When(x => x.FechaBaja.HasValue);
-        RuleFor(x => x.FechaBajaBCRA).GreaterThanOrEqualTo(x => x.FechaAltaBCRA)
-            .When(x => x.FechaBajaBCRA.HasValue);
+        RuleFor(x => x.Clave).NotNull().WithMessage("La clave no puede ser nula.");
+
+        RuleFor(x => x.Nombre).Length(3, 50).WithMessage("El nombre debe tener entre 3 y 50 caracteres.");
+
+        RuleFor(x => x.FechaAlta).NotNull().WithMessage("La fecha de alta no puede ser nula.");
+
+        RuleFor(x => x.FechaAltaBCRA).NotNull().WithMessage("La fecha de alta en BCRA no puede ser nula.");
+
+        RuleFor(x => x.FechaBaja)
+            .GreaterThanOrEqualTo(x => x.FechaAlta)
+            .When(x => x.FechaBaja.HasValue)
+            .WithMessage("La fecha de baja debe ser mayor o igual a la fecha de alta.");
+
+        RuleFor(x => x.FechaBajaBCRA)
+            .GreaterThanOrEqualTo(x => x.FechaAltaBCRA)
+            .When(x => x.FechaBajaBCRA.HasValue)
+            .WithMessage("La fecha de baja en BCRA debe ser mayor o igual a la fecha de alta en BCRA.");
     }
 }
 

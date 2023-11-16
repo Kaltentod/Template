@@ -29,6 +29,7 @@ public class CalificadorasController : ControllerBase
     )]
     [Produces("application/json")]
     [SwaggerResponse(200, "Operación exitosa", typeof(IEnumerable<GetCalificadorasQueryResponse>))]
+    [SwaggerResponse(400, "Solicitud inválida", typeof(void))]
     public async Task<IEnumerable<GetCalificadorasQueryResponse>> GetCalificadoras()
     {
         return await _mediator.Send(new GetCalificadorasQuery());
@@ -43,6 +44,7 @@ public class CalificadorasController : ControllerBase
     )]
     [Produces("application/json")]
     [SwaggerResponse(200, "Operación exitosa", typeof(GetCalificadoraQueryResponse))]
+    [SwaggerResponse(400, "Solicitud inválida", typeof(void))]
     [SwaggerResponse(404, "No encontrado", typeof(void))]
     public Task<GetCalificadoraQueryResponse> GetCalificadora([FromRoute] GetCalificadoraQuery query)
     {
@@ -91,6 +93,7 @@ public class CalificadorasController : ControllerBase
         OperationId = "EliminarCalificadoraPorID"
     )]
     [SwaggerResponse(200, "Operación exitosa", typeof(void))]
+    [SwaggerResponse(400, "Solicitud inválida", typeof(void))]
     [SwaggerResponse(404, "No encontrado", typeof(void))]
     public async Task<IActionResult> DeleteCalificadora([FromBody] DeleteCalificadoraCommand command)
     {
