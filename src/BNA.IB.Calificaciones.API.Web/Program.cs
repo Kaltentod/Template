@@ -61,13 +61,14 @@ var app = builder.Build();
 
 // Logging
 var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version!.ToString();
+var assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
     .Enrich.FromLogContext()
     .Enrich.WithProperty("AssemblyVersion", assemblyVersion) 
     .WriteTo.Console()
-    .WriteTo.File($"{Assembly.GetExecutingAssembly().GetName().FullName}-.log", rollingInterval: RollingInterval.Day) 
+    .WriteTo.File($"{assemblyName}-.log", rollingInterval: RollingInterval.Day) 
     //.WriteTo.ApplicationInsights(app.Services.GetRequiredService<TelemetryConfiguration>(), TelemetryConverter.Traces)
     .CreateLogger();
 
@@ -92,13 +93,13 @@ app.MapControllers();
 
 try
 {
-    Log.Information("Iniciando BNA.Calificaciones.API - Versión {version}", assemblyVersion);
+    Log.Information($"Iniciando {assemblyName} - Versión {assemblyVersion}");
 
     app.Run();
 }
 catch (Exception ex)
 {
-    Log.Fatal(ex, "Host terminated unexpectedly.");
+    Log.Fatal(ex, "El host terminó inesperadamente.");
 }
 finally
 {
