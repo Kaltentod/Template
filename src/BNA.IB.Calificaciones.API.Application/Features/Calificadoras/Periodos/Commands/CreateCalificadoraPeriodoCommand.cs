@@ -12,16 +12,32 @@ public class CreateCalificadoraPeriodoCommand : IRequest<CreateCalificadoraPerio
     public int CalificadoraId { get; set; }
     public DateOnly FechaAlta { get; set; }
     public DateOnly? FechaBaja { get; set; } = DateOnly.FromDateTime(Const.FechaMax);
+    public DateOnly FechaAltaBCRA { get; set; }
+    public DateOnly? FechaBajaBCRA { get; set; } = DateOnly.FromDateTime(Const.FechaMax);
+    public Dictionary<int, string> Equivalencias { get; set; } = new();
 }
 
 public class CreateCalificadoraPeriodoValidator : AbstractValidator<CreateCalificadoraPeriodoCommand>
 {
     public CreateCalificadoraPeriodoValidator()
     {
-        RuleFor(x => x.CalificadoraId).NotNull().WithMessage("Calificadora no puede ser nulo.");
-        RuleFor(x => x.FechaAlta).NotNull().WithMessage("La fecha de alta no puede ser nula.");
+        RuleFor(x => x.CalificadoraId).NotNull()
+            .WithMessage("Calificadora no puede ser nulo.");
+        
+        RuleFor(x => x.FechaAlta).NotNull()
+            .WithMessage("La fecha de alta no puede ser nula.");
+        
+        RuleFor(x => x.FechaAltaBCRA).NotNull()
+            .WithMessage("La fecha de alta no puede ser nula.");
+        
         RuleFor(x => x.FechaBaja).GreaterThanOrEqualTo(x => x.FechaAlta)
-            .When(x => x.FechaBaja.HasValue).WithMessage("La fecha de baja debe ser mayor o igual a la fecha de alta.");
+            .When(x => x.FechaBaja.HasValue)
+            .WithMessage("La fecha de baja debe ser mayor o igual a la fecha de alta.");
+
+        RuleFor(x => x.FechaBajaBCRA)
+            .GreaterThanOrEqualTo(x => x.FechaAltaBCRA)
+            .When(x => x.FechaBajaBCRA.HasValue)
+            .WithMessage("La fecha de baja en BCRA debe ser mayor o igual a la fecha de alta en BCRA.");
     }
 }
 
@@ -51,11 +67,14 @@ public class
         var entity = new CalificadoraPeriodo
         {
             FechaAlta = request.FechaAlta.ToDateTime(TimeOnly.MinValue),
-            FechaBaja = request.FechaBaja!.Value.ToDateTime(TimeOnly.MinValue)
+            FechaAltaBCRA = request.FechaAltaBCRA.ToDateTime(TimeOnly.MinValue),
+            FechaBaja = request.FechaBaja!.Value.ToDateTime(TimeOnly.MinValue),
+            FechaBajaBCRA = request.FechaBajaBCRA!.Value.ToDateTime(TimeOnly.MinValue),
+            Equivalencias = request.Equivalencias.Select(kv => new Equivalencia { BcraCalificacionId = kv.Key, CalificacionCalificadora = kv.Value }).ToList()
         };
 
         _context.CalificadoraPeriodos.Add(entity);
-
+        
         await _context.SaveChangesAsync(cancellationToken);
 
         return new CreateCalificadoraPeriodosCommandResponse { Id = entity.Id };

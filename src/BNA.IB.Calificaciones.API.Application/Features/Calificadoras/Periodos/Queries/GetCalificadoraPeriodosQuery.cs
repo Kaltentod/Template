@@ -1,4 +1,5 @@
 using BNA.IB.Calificaciones.API.Application.Common;
+using BNA.IB.Calificaciones.API.Application.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,6 +7,7 @@ namespace BNA.IB.Calificaciones.API.Application.Features.Calificadoras.Periodos.
 
 public class GetCalificadoraPeriodosQuery : IRequest<List<GetCalificadorasPeriodosQueryResponse>>
 {
+    public int CalificadoraId { get; set; }
 }
 
 public class GetCalificadorasPeriodosQueryHandler : IRequestHandler<GetCalificadoraPeriodosQuery, List<GetCalificadorasPeriodosQueryResponse>>
@@ -23,19 +25,23 @@ public class GetCalificadorasPeriodosQueryHandler : IRequestHandler<GetCalificad
         try
         {
             return _context.CalificadoraPeriodos
+                .Include(x => x.Equivalencias)
+                .Where(x => x.Calificadora.Id == request.CalificadoraId)
                 .AsNoTracking()
-                .Select(e => new GetCalificadorasPeriodosQueryResponse
+                .Select(entity => new GetCalificadorasPeriodosQueryResponse
                 {
-                    Id = e.Id,
-                    FechaAlta = e.FechaAlta,
-                    FechaBaja = e.FechaBaja
+                    Id = entity.Id,
+                    FechaAlta = entity.FechaAlta,
+                    FechaBaja = entity.FechaBaja,
+                    FechaAltaBCRA = entity.FechaAltaBCRA,
+                    FechaBajaBCRA = entity.FechaBajaBCRA,
+                    //Equivalencias = entity.Equivalencias.ToDictionary(e => e.BcraCalificacionId, e => e.CalificacionCalificadora)
                 })
                 .ToListAsync(cancellationToken);
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Error al obtener las calificadoras: {e.Message}");
-            throw;
+            throw new Exception($"Error al obtener los periodos de la calificadora ({request.CalificadoraId}): {e.Message}", e);
         }
     }
 }
@@ -45,4 +51,7 @@ public class GetCalificadorasPeriodosQueryResponse
     public int Id { get; set; }
     public DateTime FechaAlta { get; set; }
     public DateTime? FechaBaja { get; set; }
+    public DateTime FechaAltaBCRA { get; set; }
+    public DateTime? FechaBajaBCRA { get; set; }
+    //public Dictionary<int, string> Equivalencias { get; set; }
 }

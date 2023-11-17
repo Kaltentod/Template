@@ -33,11 +33,7 @@ public class GetCalificadoraQueryHandler : IRequestHandler<GetCalificadoraQuery,
         {
             Id = entity.Id,
             Clave = entity.Clave,
-            Nombre = entity.Nombre,
-            FechaAlta = entity.FechaAlta,
-            FechaAltaBCRA = entity.FechaAltaBCRA,
-            FechaBaja = entity.FechaBaja,
-            FechaBajaBCRA = entity.FechaBajaBCRA
+            Nombre = entity.Nombre
         };
     }
 }
@@ -47,8 +43,4 @@ public class GetCalificadoraQueryResponse
     public int Id { get; set; }
     public int Clave { get; set; }
     public string Nombre { get; set; }
-    public DateTime FechaAlta { get; set; }
-    public DateTime? FechaAltaBCRA { get; set; }
-    public DateTime? FechaBaja { get; set; }
-    public DateTime? FechaBajaBCRA { get; set; }
 }

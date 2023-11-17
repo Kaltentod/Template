@@ -7,7 +7,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace BNA.IB.Calificaciones.API.Web.Controllers;
 
 [ApiController]
-[Route("api/calificadoras/[controller]")]
+[Route("api/calificadoras/{CalificadoraId}/[controller]")]
 [SwaggerTag("Periodos de la Calificadora")]
 public class CalificadoraPeriodosController : ControllerBase
 {
@@ -46,12 +46,12 @@ public class CalificadoraPeriodosController : ControllerBase
     [SwaggerResponse(200, "Operación exitosa", typeof(GetCalificadoraPeriodoQueryResponse))]
     [SwaggerResponse(400, "Solicitud inválida", typeof(void))]
     [SwaggerResponse(404, "No encontrado", typeof(void))]
-    public Task<GetCalificadoraPeriodoQueryResponse> GetCalificadora([FromRoute] GetCalificadoraPeriodoQuery query)
+    public Task<GetCalificadoraPeriodoQueryResponse> GetCalificadoraPeriodo([FromRoute] GetCalificadoraPeriodoQuery query)
     {
         return _mediator.Send(query);
     }
 
-    // CreateCalificadora
+    // CreateCalificadoraPeriodo
     [HttpPost(Name = "CreateCalificadoraPeriodo")]
     [SwaggerOperation(
         Summary = "Crear una nueva calificadora periodo",
@@ -65,7 +65,7 @@ public class CalificadoraPeriodosController : ControllerBase
     public async Task<IActionResult> CreateCalificadoraPeriodo([FromBody] CreateCalificadoraPeriodoCommand command)
     {
         var response = await _mediator.Send(command);
-        return CreatedAtRoute(new { response.Id }, response);
+        return CreatedAtRoute("GetCalificadoraPeriodo", new { response.Id }, response);
     }
 
     // UpdateCalificadoraPeriodo

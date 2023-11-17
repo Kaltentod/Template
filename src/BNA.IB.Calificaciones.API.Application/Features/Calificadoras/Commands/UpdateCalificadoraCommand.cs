@@ -12,10 +12,6 @@ public class UpdateCalificadoraCommand : IRequest
     public int Id { get; set; }
     public int Clave { get; set; }
     public string Nombre { get; set; }
-    public DateOnly FechaAlta { get; set; }
-    public DateOnly FechaAltaBCRA { get; set; }
-    public DateOnly? FechaBaja { get; set; } = DateOnly.FromDateTime(Const.FechaMax);
-    public DateOnly? FechaBajaBCRA { get; set; } = DateOnly.FromDateTime(Const.FechaMax);
 }
 
 public class UpdateCalificadoraValidator : AbstractValidator<UpdateCalificadoraCommand> 
@@ -25,20 +21,6 @@ public class UpdateCalificadoraValidator : AbstractValidator<UpdateCalificadoraC
         RuleFor(x => x.Clave).NotNull().WithMessage("La clave no puede ser nula.");
 
         RuleFor(x => x.Nombre).Length(3, 50).WithMessage("El nombre debe tener entre 3 y 50 caracteres.");
-
-        RuleFor(x => x.FechaAlta).NotNull().WithMessage("La fecha de alta no puede ser nula.");
-
-        RuleFor(x => x.FechaAltaBCRA).NotNull().WithMessage("La fecha de alta en BCRA no puede ser nula.");
-
-        RuleFor(x => x.FechaBaja)
-            .GreaterThanOrEqualTo(x => x.FechaAlta)
-            .When(x => x.FechaBaja.HasValue)
-            .WithMessage("La fecha de baja debe ser mayor o igual a la fecha de alta.");
-
-        RuleFor(x => x.FechaBajaBCRA)
-            .GreaterThanOrEqualTo(x => x.FechaAltaBCRA)
-            .When(x => x.FechaBajaBCRA.HasValue)
-            .WithMessage("La fecha de baja en BCRA debe ser mayor o igual a la fecha de alta en BCRA.");
     }
 }
 
@@ -61,10 +43,6 @@ public class UpdateCalificadoraCommandHandler : IRequestHandler<UpdateCalificado
             throw new ForbiddenException("Esta entidad ya existe.");
 
         entity.Nombre = request.Nombre;
-        entity.FechaAlta = request.FechaAlta.ToDateTime(TimeOnly.MinValue);
-        entity.FechaAltaBCRA = request.FechaAltaBCRA.ToDateTime(TimeOnly.MinValue);
-        entity.FechaBaja = request.FechaBaja!.Value.ToDateTime(TimeOnly.MinValue);
-        entity.FechaBajaBCRA = request.FechaBajaBCRA!.Value.ToDateTime(TimeOnly.MinValue);
 
         await _context.SaveChangesAsync(cancellationToken);
     }

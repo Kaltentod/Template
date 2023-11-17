@@ -2,6 +2,7 @@ using BNA.IB.Calificaciones.API.Application.Common;
 using BNA.IB.Calificaciones.API.Application.Exceptions;
 using BNA.IB.Calificaciones.API.Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace BNA.IB.Calificaciones.API.Application.Features.Calificadoras.Periodos.Queries;
 
@@ -22,19 +23,20 @@ public class GetCalificadoraPeriodoQueryHandler : IRequestHandler<GetCalificador
     public async Task<GetCalificadoraPeriodoQueryResponse> Handle(
         GetCalificadoraPeriodoQuery request, CancellationToken cancellationToken)
     {
-        var entity = await _context.CalificadoraPeriodos.FindAsync(request.Id);
+        var entity = await _context.CalificadoraPeriodos
+            .Include(x => x.Equivalencias)
+            .FirstOrDefaultAsync(x => x.Id == request.Id);
 
-        if (entity is null)
-        {
-            throw new NotFoundException(nameof(CalificadoraPeriodo), request.Id);
-        }
+        if (entity is null) throw new NotFoundException(nameof(CalificadoraPeriodo), request.Id);
 
         return new GetCalificadoraPeriodoQueryResponse
         {
             Id = entity.Id,
             FechaAlta = entity.FechaAlta,
             FechaBaja = entity.FechaBaja,
-            Equivalencias = entity.PeriodoCalificadoraEquivalencias
+            FechaAltaBCRA = entity.FechaAltaBCRA,
+            FechaBajaBCRA = entity.FechaBajaBCRA,
+            Equivalencias = entity.Equivalencias.ToDictionary(e => e.BcraCalificacionId, e => e.CalificacionCalificadora)
         };
     }
 }
@@ -44,5 +46,7 @@ public class GetCalificadoraPeriodoQueryResponse
     public int Id { get; set; }
     public DateTime FechaAlta { get; set; }
     public DateTime? FechaBaja { get; set; }
-    public ICollection<CalificadoraPeriodoEquivalencia> Equivalencias { get; set; }
+    public DateTime FechaAltaBCRA { get; set; }
+    public DateTime? FechaBajaBCRA { get; set; }
+    public Dictionary<int, string> Equivalencias { get; set; }
 }

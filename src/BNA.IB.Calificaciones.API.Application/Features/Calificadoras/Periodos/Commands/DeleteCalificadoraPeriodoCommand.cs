@@ -36,7 +36,7 @@ public class DeleteCalificadoraPeriodosCommandHandler : IRequestHandler<DeleteCa
 
         if (entity is null) throw new NotFoundException();
 
-        var tituloPersonaCalificadaValidation = await _context.TituloPersonaCalificadas
+        var tituloPersonaCalificadaValidation = await _context.TituloPersonaCalificaciones
             .AnyAsync(x => x.CalificadoraPeriodo.Id == request.CalificadoraId &&
                            (entity.FechaAlta <= x.FechaAlta || x.FechaAlta <= entity.FechaBaja) &&
                            (entity.FechaAlta <= x.FechaBaja || x.FechaBaja <= entity.FechaBaja));

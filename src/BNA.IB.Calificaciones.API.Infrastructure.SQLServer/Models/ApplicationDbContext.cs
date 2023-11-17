@@ -36,12 +36,11 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
         return await base.SaveChangesAsync(cancellationToken);
     }
 
-    public DbSet<BCRACalificacion> BCRACalificaciones { get; }
-    public DbSet<Calificadora> Calificadoras { get; }
-    public DbSet<CalificadoraPeriodo> CalificadoraPeriodos { get; }
-    public DbSet<CalificadoraPeriodoEquivalencia> CalificadoraPeriodoEquivalencias { get; }
-    public DbSet<Equivalencia> Equivalencias { get; }
-    public DbSet<TituloPersonaCalificada> TituloPersonaCalificadas { get; }
+    public DbSet<BCRACalificacion> BCRACalificaciones { get; set; }
+    public DbSet<Calificadora> Calificadoras { get; set; }
+    public DbSet<CalificadoraPeriodo> CalificadoraPeriodos { get; set; }
+    public DbSet<Equivalencia> Equivalencias { get; set; }
+    public DbSet<TituloPersonaCalificacion> TituloPersonaCalificaciones { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -64,7 +64,7 @@ public class CalificadorasController : ControllerBase
     public async Task<IActionResult> CreateCalificadora([FromBody] CreateCalificadoraCommand command)
     {
         var response = await _mediator.Send(command);
-        return CreatedAtRoute(new { response.Id }, response);
+        return CreatedAtRoute( "GetCalificadora",new { response.Id }, response);
     }
 
     // UpdateCalificadora

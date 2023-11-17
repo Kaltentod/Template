@@ -28,18 +28,13 @@ public class GetCalificadorasQueryHandler : IRequestHandler<GetCalificadorasQuer
                 {
                     Id = e.Id,
                     Clave = e.Clave,
-                    Nombre = e.Nombre,
-                    FechaAlta = e.FechaAlta,
-                    FechaAltaBCRA = e.FechaAltaBCRA,
-                    FechaBaja = e.FechaBajaBCRA,
-                    FechaBajaBCRA = e.FechaBajaBCRA
+                    Nombre = e.Nombre
                 })
                 .ToListAsync(cancellationToken);
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Error al obtener las calificadoras: {e.Message}");
-            throw;
+            throw new Exception($"Error al obtener las calificadoras: {e.Message}", e);
         }
     }
 }
@@ -49,8 +44,4 @@ public class GetCalificadorasQueryResponse
     public int Id { get; set; }
     public int Clave { get; set; }
     public string Nombre { get; set; }
-    public DateTime FechaAlta { get; set; }
-    public DateTime? FechaAltaBCRA { get; set; }
-    public DateTime? FechaBaja { get; set; }
-    public DateTime? FechaBajaBCRA { get; set; }
 }
